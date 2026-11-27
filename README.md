@@ -21,7 +21,7 @@ Static website for [www.lights-on-radcliffe.com](https://www.lights-on-radcliffe
 Create a new **public** repo on GitHub (e.g., `lights-on-radcliffe`), then run:
 
 ```bash
-git remote add origin https://github.com/<YOUR-USERNAME>/lights-on-radcliffe.git
+git remote add origin https://github.com/billnapier/lights-on-radcliffe.git
 git push -u origin main
 ```
 
@@ -35,7 +35,7 @@ git push -u origin main
 In Namecheap → **Domain List → Manage → Advanced DNS** for `lights-on-radcliffe.com`:
 
 1. Replace the existing `www` CNAME (`ghs.googlehosted.com`) with:
-   - **Type:** `CNAME Record` | **Host:** `www` | **Value:** `<YOUR-USERNAME>.github.io.`
+   - **Type:** `CNAME Record` | **Host:** `www` | **Value:** `billnapier.github.io.`
 2. Add apex `A` records so `lights-on-radcliffe.com` (without `www`) redirects to `www.lights-on-radcliffe.com`:
    - `A` | `@` | `185.199.108.153`
    - `A` | `@` | `185.199.109.153`
