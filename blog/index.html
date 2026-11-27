@@ -40,6 +40,62 @@
     <section class="section">
       <div class="container prose">
         <article class="blog-post">
+          <span class="blog-date">November 26, 2026</span>
+          <h2>Interactive Song Requests (Remote Falcon) &amp; a Brand-New Website</h2>
+          <p>
+            Ahead of this year's show kickoff (running nightly <strong>5:00 – 10:00 PM from December 1 through
+            January 6</strong>), I finally rolled out two upgrades I've been wanting to do for a long time: letting
+            viewers pick which song plays next right from their phones, and rebuilding this website from scratch.
+          </p>
+          <p>
+            First up is <a href="https://remotefalcon.com/" target="_blank" rel="noopener">Remote Falcon</a>. It runs
+            as a plugin directly inside Falcon Player (FPP) on the Raspberry Pi 4. All of the pixel controllers still
+            live on their own dedicated, isolated Ethernet show network, while the Pi connects over Wi-Fi to talk to
+            Remote Falcon. When you pull up in front of the house, you can head to our new
+            <a href="../request/">Pick a Song</a> page, allow GPS location access so we know you're actually at the
+            show, and queue up your favorite sequence!
+          </p>
+          <p>
+            Adding Remote Falcon was also a great excuse to move the site off Google Sites and onto a custom static
+            website hosted on GitHub Pages. A few things I'm really happy with in the new setup:
+          </p>
+          <ul>
+            <li>
+              <strong>Dark night-sky theme:</strong> Way easier on your eyes when you're sitting in a dark car watching
+              the lights (and matches the glow of the 88.3 FM sign out front).
+            </li>
+            <li>
+              <strong>Seamless Remote Falcon integration:</strong> Our <a href="../request/">Pick a Song</a> page embeds
+              Remote Falcon right on <code>www.lights-on-radcliffe.com</code> using a matching dark viewer template so
+              it feels like one unified site.
+            </li>
+            <li>
+              <strong>Live "Now Playing" on the Home page:</strong> The homepage now queries Remote Falcon's public
+              GraphQL API to show what song is currently playing on 88.3 FM, what's up next, and how many requests are
+              in the queue.
+            </li>
+            <li>
+              <strong>Updated <a href="../how/">How?</a> page:</strong> Turns out the old site still said "1,200+
+              lights"—after checking the actual xLights layout and FPP config, we're actually running
+              <strong>over 2,000 addressable pixel nodes (~2,200 LEDs)</strong> across 5 AlphaPix controllers (3 Classic
+              and 2 Flex), including the Mega Tree and 90-pixel star, 6 mini-trees, 4 PEX arches, window frames, the
+              121-pixel "Tune to 88.3" sign, AC ground lights, and FPP-automated inflatables.
+            </li>
+            <li>
+              <strong>Automated publishing:</strong> The website now lives in its own public
+              <a href="https://github.com/billnapier/lights-on-radcliffe" target="_blank" rel="noopener">GitHub repository</a>
+              with a GitHub Actions workflow that validates all links and assets on every pull request and
+              automatically deploys to GitHub Pages on merge.
+            </li>
+          </ul>
+          <p>
+            Stop by starting December 1, tune your car radio to <strong>88.3 FM</strong>, and try queuing up a song!
+            As always, the show is completely free—if you enjoy it, please consider making a donation to
+            <a href="https://impact.shfb.org/give/346982" target="_blank" rel="noopener">Second Harvest Food Bank</a>.
+          </p>
+        </article>
+
+        <article class="blog-post">
           <span class="blog-date">November 22, 2023</span>
           <h2>Kicking Off the 2023 Season (and Fixing an xLights Bug)</h2>
           <p>

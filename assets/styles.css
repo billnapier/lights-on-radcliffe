@@ -637,6 +637,10 @@ main {
   padding: 28px;
 }
 
+.blog-post + .blog-post {
+  margin-top: 28px;
+}
+
 .blog-date {
   display: inline-block;
   font-size: 0.8rem;
