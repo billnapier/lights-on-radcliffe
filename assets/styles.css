@@ -325,6 +325,102 @@ main {
   color: #fff;
 }
 
+/* ==================== LIVE NOW PLAYING ==================== */
+.now-playing-card {
+  background: linear-gradient(135deg, rgba(17, 28, 51, 0.96), rgba(15, 23, 42, 0.94));
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 24px;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.now-playing-card.is-live {
+  border-color: rgba(56, 189, 248, 0.5);
+  box-shadow: 0 0 32px rgba(56, 189, 248, 0.14);
+}
+
+.np-main {
+  min-width: 0;
+  flex: 1 1 280px;
+}
+
+.np-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.now-playing-card.is-live .np-eyebrow {
+  color: var(--cyan);
+}
+
+.np-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--gold);
+  flex-shrink: 0;
+}
+
+.now-playing-card.is-live .np-dot {
+  background: var(--green);
+  box-shadow: 0 0 10px var(--green);
+  animation: np-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes np-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.55; transform: scale(0.85); }
+}
+
+.np-title {
+  font-size: clamp(1.15rem, 2.5vw, 1.45rem);
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.25;
+  margin: 0 0 4px;
+}
+
+.np-meta {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+.np-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.np-queue {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--gold);
+  background: rgba(245, 197, 66, 0.12);
+  border: 1px solid rgba(245, 197, 66, 0.35);
+  border-radius: 999px;
+  padding: 5px 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .now-playing-card.is-live .np-dot {
+    animation: none;
+  }
+}
+
 /* ==================== INFO CARDS ==================== */
 .info-grid {
   display: grid;
