@@ -1,0 +1,105 @@
+name: Validate and Deploy to GitHub Pages
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Validate site links and assets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify local links, assets, and Remote Falcon template
+        run: |
+          python3 - <<'EOF'
+          import os, re, threading, urllib.request, urllib.parse
+          from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
+
+          class QuietHandler(SimpleHTTPRequestHandler):
+              def log_message(self, format, *args):
+                  pass
+
+          server = ThreadingHTTPServer(("127.0.0.1", 0), QuietHandler)
+          port = server.server_address[1]
+          threading.Thread(target=server.serve_forever, daemon=True).start()
+
+          base = f"http://127.0.0.1:{port}"
+          pages = ["/", "/request/", "/how/", "/blog/", "/home/"]
+          checked = set()
+          errors = []
+
+          for p in pages:
+              url = base + p
+              resp = urllib.request.urlopen(url, timeout=5)
+              assert resp.status == 200, f"{p} returned {resp.status}"
+              body = resp.read().decode("utf-8")
+              checked.add(p)
+              for attr in re.findall(r'(?:href|src)="([^"]+)"', body):
+                  if attr.startswith(("http://", "https://", "mailto:", "#")):
+                      continue
+                  target = urllib.parse.urljoin(url, attr)
+                  if target not in checked:
+                      try:
+                          r2 = urllib.request.urlopen(target, timeout=5)
+                          if r2.status != 200:
+                              errors.append(f"{p} -> {attr} ({r2.status})")
+                          checked.add(target)
+                      except Exception as e:
+                          errors.append(f"{p} -> {attr} (ERR: {e})")
+
+          server.shutdown()
+
+          rf = open("remotefalcon/viewer-page.html").read()
+          required_rf = [
+              "{jukebox-dynamic-container}", "{playlist-voting-dynamic-container}",
+              "{location-code-dynamic-container}", "{after-hours-message}",
+              "{NOW_PLAYING}", "{NEXT_PLAYLIST}", "{PLAYLISTS}", "{LOCATION_CODE}",
+              'id="requestSuccessful"', 'id="invalidLocationCode"'
+          ]
+          missing_rf = [tok for tok in required_rf if tok not in rf]
+
+          print(f"Checked {len(checked)} local URLs/assets. Errors: {len(errors)}")
+          for e in errors:
+              print("  ERR:", e)
+          assert not errors, f"Broken links/assets: {errors}"
+          assert not missing_rf, f"Missing RF tokens: {missing_rf}"
+          EOF
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: validate
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
