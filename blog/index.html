@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Blog — The Lights on Radcliffe</title>
+  <meta name="description" content="Build notes, upgrades, and behind-the-scenes stories from The Lights on Radcliffe.">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-inner">
+      <a class="brand" href="../">
+        <span class="brand-star" aria-hidden="true">★</span>
+        <span><span class="brand-text-short">The </span>Lights on Radcliffe</span>
+      </a>
+      <nav aria-label="Primary">
+        <ul class="nav-links">
+          <li><a href="../">Home</a></li>
+          <li><a href="../how/">How?</a></li>
+          <li><a href="./" class="active">Blog</a></li>
+          <li><a href="../request/" class="nav-cta">Pick a Song</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <h1>Blog</h1>
+        <p>Notes on building, wiring, debugging, and upgrading the show each season.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container prose">
+        <article class="blog-post">
+          <span class="blog-date">November 22, 2023</span>
+          <h2>Kicking Off the 2023 Season (and Fixing an xLights Bug)</h2>
+          <p>
+            I decided to move up the show start date this year to Thanksgiving, to give people more time to enjoy the
+            show. Turkey Day is of course earlier this year than usual, so November was a little rushed getting all the
+            lights up and props out. But I got it done—the same setup that ended the 2022 season is out today.
+          </p>
+          <p>
+            But I seem to have failed to take notes last year on how I had hooked things up. Ooops. I really thought I
+            had done that. I had some rough ideas (the controllers have names that describe what they control)—it was
+            really which strand gets hooked up to which port on the controller. Luckily,
+            <a href="https://xlights.org/" target="_blank" rel="noopener">xLights</a> has a great feature (that I
+            hadn't used in the past) to allow xLights to just "handle" it all for you, including programming channels
+            and such. Sadly, it wasn't working with my
+            <a href="https://www.holidaycoro.com/AlphaPix-4-V3-RGB-Pixel-Controller-p/722-v3.htm" target="_blank" rel="noopener">AlphaPix 4 controllers</a>.
+            So I got frustrated enough that I actually started debugging the application, which ended up in my
+            submission of a <a href="https://github.com/smeighan/xLights/pull/4137" target="_blank" rel="noopener">PR to fix the bug</a>.
+            That greatly simplified things.
+          </p>
+
+          <figure>
+            <img src="../assets/blog-2023.jpg" alt="Open weatherproof enclosure containing the House AlphaPix 4 pixel controller and power supply">
+            <figcaption>Inside the "House" AlphaPix 4 controller enclosure during setup.</figcaption>
+          </figure>
+
+          <p>Anyway, there are still a few more things to do before I can declare that I'm done tweaking the 2023 season:</p>
+          <ul>
+            <li>
+              I need to retake the house photo that I use in xLights to tell it where <em>exactly</em> the lights are.
+              The plans are bigger this year, which required some moving of props. You probably won't notice the
+              difference in sequencing afterwards, but I like to believe I can.
+            </li>
+            <li>
+              I've got 2 props (a tree and a star) that didn't make it out last year because I ran out of time to solder
+              things together. I plan to get them out sometime early in December.
+            </li>
+            <li>
+              I bought a faster Raspberry Pi in mid-December last year, but (again) ran out of time before I was able to
+              get it set up. The really old one I'm using is a little flaky (it hangs sometimes, and sometimes fails to
+              boot) and also seems just a touch underpowered for some of the sequences (causing glitches in the audio,
+              for example). I'm hoping the newer faster Raspberry Pi can fix both those problems.
+            </li>
+            <li>
+              I'd like to sequence at least one more song to go into the show—not sure yet exactly what.
+            </li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>© The Lights on Radcliffe</span>
+      <div class="footer-links">
+        <a href="../request/">Pick a Song</a>
+        <a href="../how/">How?</a>
+        <a href="./">Blog</a>
+        <a href="https://impact.shfb.org/give/346982" target="_blank" rel="noopener">Second Harvest Food Bank</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

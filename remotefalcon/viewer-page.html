@@ -1,0 +1,950 @@
+<!--
+  =====================================================================
+  THE LIGHTS ON RADCLIFFE — REMOTE FALCON VIEWER PAGE TEMPLATE
+  Matches www.lights-on-radcliffe.com (dark starry-night theme) so it
+  embeds seamlessly inside /request/ without a duplicate site header.
+
+  HOW TO INSTALL:
+    1. Open Remote Falcon Control Panel -> Viewer Page
+    2. Copy and paste this entire file into the HTML editor and Save.
+
+  Supports: Jukebox Mode, Voting Mode, Location Code, and After Hours.
+  =====================================================================
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #080d1a;
+    --card: #111c33;
+    --card-soft: #0f172a;
+    --border: rgba(148, 179, 255, 0.18);
+    --border-strong: rgba(148, 179, 255, 0.32);
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+    --red: #dc2626;
+    --red-bright: #ef4444;
+    --gold: #f5c542;
+    --cyan: #38bdf8;
+    --green: #10b981;
+    --column: 640px;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .lor, .lor * {
+    box-sizing: border-box;
+  }
+
+  .lor {
+    min-height: 100vh;
+    background:
+      radial-gradient(ellipse 80% 40% at 50% 0%, rgba(56, 189, 248, 0.1), transparent 60%),
+      var(--bg);
+    color: var(--text);
+    padding: 18px 16px 40px;
+  }
+
+  .lor a {
+    color: var(--cyan);
+  }
+
+  .lor .wrap {
+    width: 100%;
+    max-width: var(--column);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  /* Hide empty Remote Falcon conditional containers */
+  .lor .wrap > div:empty,
+  .lor .stack > div:empty,
+  .lor .retry:empty {
+    display: none;
+  }
+
+  .lor .stack {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .lor .label {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--cyan);
+  }
+
+  .lor .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px 18px;
+  }
+
+  /* ===== NOW PLAYING ===== */
+  .lor .playing-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .lor .timer {
+    font-size: 12px;
+    font-weight: 800;
+    color: #080d1a;
+    background: var(--cyan);
+    border-radius: 999px;
+    padding: 3px 10px;
+  }
+
+  .lor .timer::after {
+    content: " left";
+  }
+
+  .lor .now {
+    position: relative;
+    min-height: 58px;
+    padding-left: 68px;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1.2;
+    color: #fff;
+  }
+
+  .lor .now::before {
+    content: "♪";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--red-bright), #991b1b);
+    color: #fff;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25);
+  }
+
+  .lor .now:has(img)::before {
+    display: none;
+  }
+
+  .lor .now img {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--cyan);
+  }
+
+  .lor .now > div {
+    flex-basis: 100%;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+
+  .lor .now > div:empty {
+    display: none;
+  }
+
+  .lor .upnext {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .lor .upnext .next {
+    color: var(--gold);
+    font-weight: 700;
+  }
+
+  .lor .upnext .next img,
+  .lor .upnext .next div {
+    display: none;
+  }
+
+  .lor .upnext:has(.next:empty) {
+    display: none;
+  }
+
+  /* Idle state when nothing is playing */
+  .lor .idle {
+    display: none;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .lor .idle-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(245, 197, 66, 0.14);
+    border: 1px solid rgba(245, 197, 66, 0.35);
+    color: var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  .lor .idle-title {
+    font-weight: 800;
+    font-size: 16px;
+    color: #fff;
+  }
+
+  .lor .idle-text {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .lor .playing:has(.now:empty) .now,
+  .lor .playing:has(.now:empty) .timer,
+  .lor .playing:has(.now:empty) .upnext {
+    display: none;
+  }
+
+  .lor .playing:has(.now:empty) .idle {
+    display: flex;
+  }
+
+  /* ===== QUEUE (JUKEBOX MODE) ===== */
+  .lor .queue-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 6px;
+  }
+
+  .lor .qcount {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .lor .qcount b {
+    color: var(--gold);
+    font-size: 15px;
+  }
+
+  .lor .depth-0 .of,
+  .lor .depth-undefined .of,
+  .lor .depth-null .of {
+    display: none;
+  }
+
+  .lor .qlist {
+    counter-reset: q;
+    max-height: 180px;
+    overflow-y: auto;
+  }
+
+  .lor .qlist .jukebox-queue {
+    counter-increment: q;
+    font-size: 14px;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+    color: #e2e8f0;
+  }
+
+  .lor .qlist .jukebox-queue:last-child {
+    border-bottom: 0;
+  }
+
+  .lor .qlist .jukebox-queue::before {
+    content: counter(q) ". ";
+    color: var(--cyan);
+    font-weight: 800;
+  }
+
+  .lor .qlist .jukebox-queue img,
+  .lor .qlist .jukebox-queue div {
+    display: none;
+  }
+
+  .lor .queue:has(.qlist:empty) {
+    display: none;
+  }
+
+  .lor .queue-empty {
+    display: none;
+    border: 1px dashed var(--border-strong);
+    border-radius: 16px;
+    padding: 14px 16px;
+    background: rgba(56, 189, 248, 0.05);
+    align-items: center;
+    gap: 12px;
+  }
+
+  .lor .queue:has(.qlist:empty) + .queue-empty {
+    display: flex;
+  }
+
+  .lor .queue-empty .t {
+    font-weight: 800;
+    font-size: 15px;
+    color: #fff;
+  }
+
+  .lor .queue-empty .s {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  /* ===== VOTING MODE EXTRAS ===== */
+  .lor .leader {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .lor .leader:has(.lead:empty) {
+    display: none;
+  }
+
+  .lor .leading-vote-title {
+    display: block;
+    font-weight: 800;
+    font-size: 17px;
+    color: #fff;
+    margin-top: 4px;
+  }
+
+  .lor .leading-vote-artist {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .lor .lcount {
+    flex: 0 0 60px;
+    height: 52px;
+    border-radius: 12px;
+    background: rgba(56, 189, 248, 0.14);
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    color: var(--cyan);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .lor .lcount::after {
+    content: "votes";
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 3px;
+  }
+
+  .lor .votes-left {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .lor .votes-left .vl {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--gold);
+  }
+
+  .lor .votes-left .s {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .lor .votes-left:has(.vl:empty) {
+    display: none;
+  }
+
+  /* ===== LOCATION CODE ===== */
+  .lor .code-box {
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.12), rgba(17, 28, 51, 0.96));
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    border-radius: 16px;
+    padding: 16px 18px;
+    text-align: center;
+  }
+
+  .lor .code-box .t {
+    font-weight: 800;
+    font-size: 15px;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+
+  .lor .code-box .sub {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  .lor .code-box input {
+    width: 100% !important;
+    max-width: 240px !important;
+    padding: 10px 14px !important;
+    border-radius: 10px !important;
+    border: 1px solid var(--border-strong) !important;
+    background: var(--bg) !important;
+    color: #fff !important;
+    font-size: 20px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.14em !important;
+    text-align: center !important;
+    font-family: 'Inter', sans-serif !important;
+    outline: none !important;
+  }
+
+  .lor .code-box input:focus {
+    border-color: var(--cyan) !important;
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25) !important;
+  }
+
+  /* ===== AFTER HOURS ===== */
+  .lor .closed {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .lor .closed-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(245, 197, 66, 0.14);
+    border: 1px solid rgba(245, 197, 66, 0.35);
+    color: var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    margin-bottom: 4px;
+  }
+
+  .lor .closed .t {
+    font-size: 20px;
+    font-weight: 800;
+    color: #fff;
+  }
+
+  .lor .closed .s {
+    font-size: 14px;
+    color: var(--muted);
+    max-width: 400px;
+    line-height: 1.5;
+  }
+
+  /* ===== SONG LIST ===== */
+  .lor .list-head {
+    margin: 4px 0 8px;
+  }
+
+  .lor .list-head .h {
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    color: #fff;
+  }
+
+  .lor .list-head .s {
+    font-size: 13.5px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .lor .songs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .lor .category-section {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .lor .category-label {
+    flex-basis: 100%;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 10px 0 2px;
+  }
+
+  .lor .jukebox-list,
+  .lor .cell-vote-playlist {
+    position: relative;
+    width: 100%;
+    min-height: 64px;
+    padding: 12px 16px 12px 66px;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    font-size: 15.5px;
+    font-weight: 700;
+    line-height: 1.25;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.14s ease, border-color 0.14s ease, transform 0.1s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .lor .jukebox-list:hover,
+  .lor .cell-vote-playlist:hover {
+    background: #172544;
+    border-color: rgba(56, 189, 248, 0.48);
+  }
+
+  .lor .jukebox-list:active,
+  .lor .cell-vote-playlist:active {
+    transform: scale(0.99);
+    background: #1d2f56;
+  }
+
+  .lor .jukebox-list::before,
+  .lor .cell-vote-playlist::before {
+    content: "▶";
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: rgba(220, 38, 38, 0.18);
+    border: 1px solid rgba(239, 68, 68, 0.45);
+    color: var(--red-bright);
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 2px;
+  }
+
+  .lor .jukebox-list:has(img)::before,
+  .lor .cell-vote-playlist:has(img)::before {
+    display: none;
+  }
+
+  .lor .jukebox-list img,
+  .lor .cell-vote-playlist img {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--border-strong);
+  }
+
+  .lor .jukebox-list-artist,
+  .lor .cell-vote-playlist-artist {
+    flex-basis: 100%;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .lor .jukebox-list-artist:empty,
+  .lor .cell-vote-playlist-artist:empty {
+    display: none;
+  }
+
+  .lor .sequence-unavailable {
+    opacity: 0.48;
+  }
+
+  .lor .sequence-unavailable-hint {
+    flex-basis: 100%;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gold);
+    margin-top: 2px;
+  }
+
+  /* Voting mode row + vote count */
+  .lor .votes .cell-vote-playlist {
+    width: calc(100% - 72px);
+  }
+
+  .lor .cell-vote {
+    width: 64px;
+    min-height: 64px;
+    border-radius: 14px;
+    background: rgba(56, 189, 248, 0.12);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    color: var(--cyan);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .lor .cell-vote::after {
+    content: "votes";
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 3px;
+  }
+
+  .lor .cell-vote-row {
+    width: 100%;
+    display: flex;
+    gap: 8px;
+    align-items: stretch !important;
+  }
+
+  .lor .cell-vote-row .cell-vote-playlist {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .lor .cell-vote-row .cell-vote {
+    flex: 0 0 64px;
+  }
+
+  /* ===== MINI DONATE NOTE ===== */
+  .lor .donate-mini {
+    margin-top: 8px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .lor .donate-mini a {
+    color: #6ee7b7;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .lor .donate-mini a:hover {
+    text-decoration: underline;
+  }
+
+  /* ===== POP-UPS ===== */
+  .lor .pop {
+    position: fixed;
+    inset: 0;
+    z-index: 2147483000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(4, 7, 15, 0.78);
+    backdrop-filter: blur(4px);
+    cursor: pointer;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.2s ease, transform 0s linear 0s;
+  }
+
+  .lor .pop:focus {
+    opacity: 0;
+    transform: translateY(200vh);
+    transition: opacity 0.2s ease, transform 0s linear 0.22s;
+  }
+
+  .lor .pop-card {
+    width: 100%;
+    max-width: 320px;
+    background: var(--card);
+    border: 1px solid var(--border-strong);
+    border-top: 5px solid var(--cyan);
+    border-radius: 18px;
+    padding: 22px 20px;
+    text-align: center;
+    color: var(--text);
+    box-shadow: 0 20px 44px rgba(0, 0, 0, 0.6);
+    animation: popin 0.22s ease-out;
+  }
+
+  .lor .pop-ok .pop-card {
+    border-top-color: var(--green);
+  }
+
+  .lor .pop-warn .pop-card {
+    border-top-color: var(--red-bright);
+  }
+
+  .lor .pop-t {
+    font-size: 20px;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1.2;
+  }
+
+  .lor .pop-s {
+    font-size: 14px;
+    color: var(--muted);
+    margin-top: 8px;
+    line-height: 1.45;
+  }
+
+  .lor .pop-hint {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #64748b;
+    margin-top: 14px;
+  }
+
+  .lor .retry-inline:empty {
+    display: none;
+  }
+
+  @keyframes popin {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+</style>
+
+<div class="lor">
+  <div class="wrap">
+
+    <!-- ===== JUKEBOX MODE: NOW PLAYING + QUEUE ===== -->
+    <div {jukebox-dynamic-container}>
+      <div class="stack">
+        <div class="card playing">
+          <div class="playing-head">
+            <span class="label">Now Playing</span>
+            <span class="timer">{NOW_PLAYING_TIMER}</span>
+          </div>
+          <div class="now">{NOW_PLAYING}</div>
+          <div class="upnext">Up next: <b class="next">{NEXT_PLAYLIST}</b></div>
+          <div class="idle">
+            <div class="idle-icon" aria-hidden="true">✨</div>
+            <div>
+              <div class="idle-title">Between songs</div>
+              <div class="idle-text">The next song starts in a moment — pick one below to hear it next!</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card queue">
+          <div class="queue-head">
+            <span class="label">Up Next in Queue</span>
+            <span class="qcount depth-{QUEUE_DEPTH}"><b>{QUEUE_SIZE}</b><span class="of"> of {QUEUE_DEPTH}</span></span>
+          </div>
+          <div class="qlist">{JUKEBOX_QUEUE_ALL}</div>
+        </div>
+
+        <div class="queue-empty">
+          <div style="font-size: 22px;" aria-hidden="true">🎵</div>
+          <div>
+            <div class="t">No requests in line yet</div>
+            <div class="s">Pick a song below and yours plays next!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== VOTING MODE: NOW PLAYING + LEADING VOTE ===== -->
+    <div {playlist-voting-dynamic-container}>
+      <div class="stack">
+        <div class="card playing">
+          <div class="playing-head">
+            <span class="label">Now Playing</span>
+            <span class="timer">{NOW_PLAYING_TIMER}</span>
+          </div>
+          <div class="now">{NOW_PLAYING}</div>
+          <div class="upnext">Up next: <b class="next">{NEXT_PLAYLIST}</b></div>
+          <div class="idle">
+            <div class="idle-icon" aria-hidden="true">✨</div>
+            <div>
+              <div class="idle-title">Between songs</div>
+              <div class="idle-text">Vote below for what plays next!</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card leader">
+          <div>
+            <div class="label">Leading the Vote</div>
+            <div class="lead">{LEADING_VOTE}</div>
+          </div>
+          <div class="lcount">{LEADING_VOTE_COUNT}</div>
+        </div>
+
+        <div class="card votes-left">
+          <div style="font-size: 20px;" aria-hidden="true">★</div>
+          <div>
+            <div class="vl">{VOTES_REMAINING}</div>
+            <div class="s">The song with the most votes plays next.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== AFTER HOURS (VIEWER CONTROL OFF) ===== -->
+    <div {after-hours-message}>
+      <div class="closed">
+        <div class="closed-icon" aria-hidden="true">🌙</div>
+        <div class="t">Song requests are currently closed</div>
+        <div class="s">
+          The Lights on Radcliffe run nightly from <strong>5:00 – 10:00 PM</strong> (Thanksgiving through New Year's).
+          Stop by during show hours, tune to <strong>88.3 FM</strong>, and pick your favorites!
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== LOCATION CODE INPUT ===== -->
+    <div {location-code-dynamic-container}>
+      <div class="code-box">
+        <div class="t">Enter the Code from Our Sign</div>
+        <div class="sub">Look for the code displayed near the lights, then tap a song below.</div>
+        <div>{LOCATION_CODE}</div>
+      </div>
+    </div>
+
+    <!-- ===== GPS RETRY BOX (ONLY SHOWN IF GPS CHECK IS ENABLED) ===== -->
+    <div class="retry">{RETRY_LOCATION}</div>
+
+    <!-- ===== SONG LIST (JUKEBOX) ===== -->
+    <div {jukebox-dynamic-container}>
+      <div class="list-head">
+        <div class="h">Pick a Song</div>
+        <div class="s">Tap any song to add it to the queue.</div>
+      </div>
+      <div class="songs">{PLAYLISTS}</div>
+    </div>
+
+    <!-- ===== SONG LIST (VOTING) ===== -->
+    <div {playlist-voting-dynamic-container}>
+      <div class="list-head">
+        <div class="h">Vote for a Song</div>
+        <div class="s">Tap a song to cast your vote.</div>
+      </div>
+      <div class="songs votes">{PLAYLISTS}</div>
+    </div>
+
+    <div class="donate-mini">
+      Enjoying the show? Support <a href="https://impact.shfb.org/give/346982" target="_blank" rel="noopener">Second Harvest Food Bank</a> ❤️
+    </div>
+
+  </div>
+
+  <!-- ===================== POP-UP MESSAGES ===================== -->
+  <div id="requestSuccessful" style="display: none"><div class="pop pop-ok" tabindex="0" aria-label="Close message"><div class="pop-card" role="status" aria-live="polite">
+    <div class="pop-t">You're in line! 🎄</div>
+    <div class="pop-s">Your song has been added and will play soon. Tune to 88.3 FM and enjoy!</div>
+    <div class="pop-hint">Tap to close</div>
+  </div></div></div>
+
+  <div id="requestPlaying" style="display: none"><div class="pop" tabindex="0" aria-label="Close message"><div class="pop-card" role="status" aria-live="polite">
+    <div class="pop-t">Great pick!</div>
+    <div class="pop-s">That song is already playing or queued up next.</div>
+    <div class="pop-hint">Tap to close</div>
+  </div></div></div>
+
+  <div id="queueFull" style="display: none"><div class="pop pop-warn" tabindex="0" aria-label="Close message"><div class="pop-card" role="status" aria-live="polite">
+    <div class="pop-t">The queue is full</div>
+    <div class="pop-s">Please try again after the current song finishes.</div>
+    <div class="pop-hint">Tap to close</div>
+  </div></div></div>
+
+  <div id="alreadyRequested" style="display: none"><div class="pop" tabindex="0" aria-label="Close message"><div class="pop-card" role="status" aria-live="polite">
+    <div class="pop-t">One at a time!</div>
+    <div class="pop-s">You can request another song after your current pick plays.</div>
+    <div class="pop-hint">Tap to close</div>
+  </div></div></div>
+
+  <div id="alreadyVoted" style="display: none"><div class="pop" tabindex="0" aria-label="Close message"><div class="pop-card" role="status" aria-live="polite">
+    <div class="pop-t">You've already voted</div>
+    <div class="pop-s">Vote again once the next song starts.</div>
+    <div class="pop-hint">Tap to close</div>
+  </div></div></div>
+
+  <div id="sequenceUnavailable" style="display: none"><div class="pop" tabindex="0" aria-label="Close message"><div class="pop-card" role="status" aria-live="polite">
+    <div class="pop-t">That song is resting</div>
+    <div class="pop-s">It just played recently — pick another favorite!</div>
+    <div class="pop-hint">Tap to close</div>
+  </div></div></div>
+
+  <div id="dailyVoteLimitReached" style="display: none"><div class="pop" tabindex="0" aria-label="Close message"><div class="pop-card" role="status" aria-live="polite">
+    <div class="pop-t">All votes used for tonight</div>
+    <div class="pop-s">Thanks for playing along with The Lights on Radcliffe!</div>
+    <div class="pop-hint">Tap to close</div>
+  </div></div></div>
+
+  <div id="invalidLocation" style="display: none"><div class="pop pop-warn" tabindex="0" aria-label="Close message"><div class="pop-card" role="status" aria-live="polite">
+    <div class="pop-t">Location not confirmed</div>
+    <div class="pop-s">Please allow location access so we know you're at the show.</div>
+    <div class="retry-inline">{RETRY_LOCATION_INLINE}</div>
+    <div class="pop-hint">Tap to close</div>
+  </div></div></div>
+
+  <div id="invalidLocationCode" style="display: none"><div class="pop pop-warn" tabindex="0" aria-label="Close message"><div class="pop-card" role="status" aria-live="polite">
+    <div class="pop-t">That code didn't match</div>
+    <div class="pop-s">Check the code on our yard sign and try again.</div>
+    <div class="pop-hint">Tap to close</div>
+  </div></div></div>
+
+  <div id="requestFailed" style="display: none"><div class="pop pop-warn" tabindex="0" aria-label="Close message"><div class="pop-card" role="status" aria-live="polite">
+    <div class="pop-t">Something went wrong</div>
+    <div class="pop-s">Please try again in a moment.</div>
+    <div class="pop-hint">Tap to close</div>
+  </div></div></div>
+</div>
