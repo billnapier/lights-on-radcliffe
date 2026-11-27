@@ -67,11 +67,15 @@ jobs:
           rf = open("remotefalcon/viewer-page.html").read()
           required_rf = [
               "{jukebox-dynamic-container}", "{playlist-voting-dynamic-container}",
-              "{location-code-dynamic-container}", "{after-hours-message}",
-              "{NOW_PLAYING}", "{NEXT_PLAYLIST}", "{PLAYLISTS}", "{LOCATION_CODE}",
-              'id="requestSuccessful"', 'id="invalidLocationCode"'
+              "{location-permission-dynamic-container}", "{location-code-dynamic-container}",
+              "{after-hours-message}", "{NOW_PLAYING}", "{NEXT_PLAYLIST}",
+              "{PLAYLISTS}", "{RETRY_LOCATION}", "{RETRY_LOCATION_INLINE}",
+              'id="requestSuccessful"', 'id="invalidLocation"'
           ]
           missing_rf = [tok for tok in required_rf if tok not in rf]
+
+          req_html = open("request/index.html").read()
+          assert 'allow="geolocation' in req_html, "request/index.html iframe missing geolocation permission"
 
           print(f"Checked {len(checked)} local URLs/assets. Errors: {len(errors)}")
           for e in errors:

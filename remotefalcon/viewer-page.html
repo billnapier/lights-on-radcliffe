@@ -8,7 +8,7 @@
     1. Open Remote Falcon Control Panel -> Viewer Page
     2. Copy and paste this entire file into the HTML editor and Save.
 
-  Supports: Jukebox Mode, Voting Mode, Location Code, and After Hours.
+  Supports: Jukebox Mode, Voting Mode, GPS Location Check, Location Code, and After Hours.
   =====================================================================
 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -396,7 +396,62 @@
     display: none;
   }
 
-  /* ===== LOCATION CODE ===== */
+  /* ===== GPS LOCATION TIP & RETRY NOTICE ===== */
+  .lor .gps-tip {
+    background: rgba(56, 189, 248, 0.1);
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    border-radius: 14px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: #cbd5e1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .lor .gps-tip strong {
+    color: #fff;
+  }
+
+  .lor .rf-location-notice {
+    background: var(--card);
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    border-radius: 16px;
+    padding: 16px 18px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    text-align: left;
+  }
+
+  .lor .rf-location-notice__heading {
+    font-weight: 800;
+    font-size: 16px;
+    color: #fff;
+  }
+
+  .lor .rf-location-notice__subline,
+  .lor .rf-location-notice__steps,
+  .lor .rf-location-notice__footer {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .lor .rf-location-notice__button {
+    background: linear-gradient(135deg, var(--red-bright), #b91c1c) !important;
+    color: #fff !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    font-weight: 800 !important;
+    min-height: 44px;
+    padding: 0 20px !important;
+    cursor: pointer !important;
+  }
+
+  .lor .pop-card .rf-location-notice {
+    margin-top: 12px;
+  }
+
+  /* ===== LOCATION CODE (FALLBACK IF ENABLED) ===== */
   .lor .code-box {
     background: linear-gradient(135deg, rgba(56, 189, 248, 0.12), rgba(17, 28, 51, 0.96));
     border: 1px solid rgba(56, 189, 248, 0.4);
@@ -850,7 +905,18 @@
       </div>
     </div>
 
-    <!-- ===== LOCATION CODE INPUT ===== -->
+    <!-- ===== GPS PERMISSION TIP (SHOWN WHEN GPS CHECK IS ENABLED) ===== -->
+    <div {location-permission-dynamic-container}>
+      <div class="gps-tip">
+        <span style="font-size: 18px;" aria-hidden="true">📍</span>
+        <span><strong>Allow location access when asked</strong> so we know you're parked near the show · Please dim headlights &amp; keep driveways clear.</span>
+      </div>
+    </div>
+
+    <!-- ===== GPS RETRY BOX (SHOWN IF LOCATION IS DENIED OR OUT OF RANGE) ===== -->
+    <div class="retry">{RETRY_LOCATION}</div>
+
+    <!-- ===== LOCATION CODE INPUT (ONLY SHOWN IF CODE CHECK IS ENABLED) ===== -->
     <div {location-code-dynamic-container}>
       <div class="code-box">
         <div class="t">Enter the Code from Our Sign</div>
@@ -858,9 +924,6 @@
         <div>{LOCATION_CODE}</div>
       </div>
     </div>
-
-    <!-- ===== GPS RETRY BOX (ONLY SHOWN IF GPS CHECK IS ENABLED) ===== -->
-    <div class="retry">{RETRY_LOCATION}</div>
 
     <!-- ===== SONG LIST (JUKEBOX) ===== -->
     <div {jukebox-dynamic-container}>
