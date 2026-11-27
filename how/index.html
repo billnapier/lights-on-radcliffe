@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>How It Works — The Lights on Radcliffe</title>
-  <meta name="description" content="Hardware, pixel controllers, Raspberry Pi, Falcon Player (FPP), xLights, and props behind The Lights on Radcliffe.">
+  <meta name="description" content="Hardware, AlphaPix controllers, Raspberry Pi 4, Falcon Player (FPP), xLights, Remote Falcon, and over 2,000 synchronized lights behind The Lights on Radcliffe.">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,7 +33,7 @@
     <section class="page-hero">
       <div class="container">
         <h1>How?</h1>
-        <p>What goes into putting together a 1,200+ light synchronized holiday display.</p>
+        <p>What goes into putting together a 2,000+ light synchronized holiday display.</p>
       </div>
     </section>
 
@@ -41,66 +41,101 @@
       <div class="container prose">
         <h2>So What Goes Into This Lightshow?</h2>
         <p>
-          First and foremost, a lot of wires—power cables, ethernet cables, and pixel cables to name a few. For power,
-          I use a lot of landscaping extension cords and a few splitters. I also run a dedicated ethernet network for
-          the light show that has no internet connection (it doesn't need it).
+          First and foremost, a lot of wires—power cables, Ethernet cables, and pixel cables to name a few. For power,
+          I use landscaping extension cords and splitters throughout the yard. All of the pixel controllers run on a
+          dedicated, isolated Ethernet show network (with no direct internet access), while the Raspberry Pi bridges
+          over Wi-Fi so it can stay synced to the clock and receive live song requests from viewers' phones.
         </p>
 
         <h2>Hardware</h2>
         <ul>
           <li>
-            <strong>2 Ethernet switches:</strong> One up on the front porch to run ethernet to everything on the right
-            side of the house, and a second ethernet switch in the garage to split out the data network for the left of
-            the house.
+            <strong>2 Ethernet switches:</strong> One up on the front porch to run Ethernet to everything on the right
+            side of the house, and a second Ethernet switch in the garage to split out the show network for the left
+            side of the yard.
           </li>
           <li>
-            <strong>4 <a href="https://www.holidaycoro.com/4-Output-E1-31-Artnet-Pixel-Controller-Assembled-p/831.htm" target="_blank" rel="noopener">AlphaPix Classic Pixel Controllers</a> (from HolidayCoro):</strong>
-            These run all the lights except for the big "Mega Tree", which is run by an AlphaPix Flex Controller.
-            There is also a Flex Controller configured to run
+            <strong>3 <a href="https://www.holidaycoro.com/4-Output-E1-31-Artnet-Pixel-Controller-Assembled-p/831.htm" target="_blank" rel="noopener">AlphaPix 4 Classic Pixel Controllers</a> (from HolidayCoro):</strong>
+            One runs the house eaves, windows, and garage outline; one runs the left yard (arches, 3 left mini-trees,
+            and the "Tune to 88.3" sign); and one runs the right driveway (3 right mini-trees plus the star on top of
+            the Mega Tree).
+          </li>
+          <li>
+            <strong>2 AlphaPix Flex Controllers (from HolidayCoro):</strong>
+            One runs the 16-strand "Mega Tree" (800 pixels across 16 universes), and a second Flex Controller is
+            configured to run
             <a href="https://www.holidaycoro.com/16-Output-AC-Animated-Lighting-Controller-AlphaPix-p/942-2.htm" target="_blank" rel="noopener">AC lights (on/off/dim)</a>
-            that I use for the ground lights in front of the garage.
+            for the big ground lights and yard unicorn in front of the garage.
           </li>
           <li>
-            <strong>1 Raspberry Pi 4:</strong> This used to be a much older Raspberry Pi that I just happened to have
-            lying around, but it was super underpowered and the show audio would glitch sometimes. After upgrading to
-            the Pi 4, I've not had any problems with it at all. This device coordinates the schedule for the show, plays
-            the audio to be broadcast, and decodes the sequences to relay to the pixel controllers.
+            <strong>1 Raspberry Pi 4 (Model B):</strong> This used to be a much older Raspberry Pi that I just happened
+            to have lying around, but it was super underpowered and the show audio would glitch sometimes. After
+            upgrading to the Pi 4, I've not had any problems with it at all. It runs the nightly schedule (5:00–10:00 PM,
+            December 1 through January 6), broadcasts the music to the FM transmitter on 88.3 FM, triggers automation
+            scripts to turn the yard inflatables on and off with the show, and streams E1.31 pixel data across 26
+            universes to the controllers.
           </li>
         </ul>
 
         <h2>Software</h2>
-        <p>There are two main pieces of software used in the show (plus Remote Falcon so viewers can pick songs!):</p>
+        <p>Three main pieces of software power the show:</p>
         <ul>
           <li>
             <strong><a href="https://xlights.org/" target="_blank" rel="noopener">xLights</a>:</strong> Open-source
-            sequencer software. This allows me to import a music track and the layout for the lights, and tell the
-            lights what to do and when. It is free.
+            sequencer software. This lets me import a music track and the layout of the house and yard, and choreograph
+            what every single light does frame by frame. It is free.
           </li>
           <li>
             <strong><a href="https://falconchristmas.com/forum/index.php?board=8.0" target="_blank" rel="noopener">Falcon Player (FPP)</a>:</strong>
-            The distribution that runs on the Raspberry Pi to schedule and run the show. It is also free.
+            The free show-player distribution running on the Raspberry Pi 4 that schedules and plays the synchronized
+            sequences and audio every evening.
+          </li>
+          <li>
+            <strong><a href="https://remotefalcon.com/" target="_blank" rel="noopener">Remote Falcon</a>:</strong>
+            An FPP plugin that connects the show to our <a href="../request/">Pick a Song</a> page so visitors parked
+            outside can choose which song plays next right from their phone.
           </li>
         </ul>
 
         <h2>How About the Lights Themselves?</h2>
         <p>
-          The house outline is done with PVC pipe. The lights are zip-tied onto the PVC pipes, and HolidayCoro sells
-          specific <a href="https://www.holidaycoro.com/PixelPipe-Clip-for-PVC-and-PixelPipe-Track-p/770.htm" target="_blank" rel="noopener">transparent clips</a>
-          that are used to attach them to the house (the clips remain on the house year-round; the PVC pipes are
-          supposed to come down each year, though they didn't one year).
+          In total, the display uses <strong>over 2,000 individually addressable RGB pixel nodes (~2,200 LEDs)</strong>
+          plus AC-controlled ground lights:
         </p>
-        <p>
-          The "Mega Tree" was a HolidayCoro kit, as were all the mini-trees. The Mega Tree is a series of plastic
-          strands attached to a vertical fence rail. The mini-trees come apart and lie flat for storage.
-        </p>
-        <p>
-          The arches are made from PVC pipe and transparent PEX pipe and use the only LED strips in the show. It boils
-          down to running an LED strip through the PEX, supported by a base made from PVC pipes.
-        </p>
+        <ul>
+          <li>
+            <strong>House outline &amp; windows (263 pixels):</strong> Built on PVC pipe with lights zip-tied along the
+            eaves, garage outline, and Bedroom, Kitchen, and Office window frames. HolidayCoro sells
+            <a href="https://www.holidaycoro.com/PixelPipe-Clip-for-PVC-and-PixelPipe-Track-p/770.htm" target="_blank" rel="noopener">transparent clips</a>
+            that stay on the house year-round so the PVC sections snap up and down each season.
+          </li>
+          <li>
+            <strong>Mega Tree &amp; Star (890 pixels):</strong> The 16-strand Mega Tree (800 pixels) is a HolidayCoro
+            kit mounted to a vertical fence rail, topped with a 90-pixel 3-ring star.
+          </li>
+          <li>
+            <strong>6 Mini-Trees (640 pixels):</strong> Three on each side of the yard (HolidayCoro kits that fold flat
+            for storage). Along with the Mega Tree, these also double as singing faces during songs like
+            <em>The Chipmunk Song</em>!
+          </li>
+          <li>
+            <strong>4 Glowing Arches (96 nodes / 288 LEDs):</strong> DIY arches made from transparent PEX pipe with
+            RGB LED strips fed through the inside (3 LEDs per addressable node) and held in shape by PVC bases.
+          </li>
+          <li>
+            <strong>"Tune to 88.3" Radio Sign (121 pixels):</strong> A custom pixel sign on the left side of the yard
+            (dimmed down so it stays crisp and easy to read from the street at night).
+          </li>
+          <li>
+            <strong>AC Ground Lights, Unicorn &amp; Inflatables:</strong> Traditional AC lights controlled by the AC
+            AlphaPix Flex controller, plus inflatables automatically powered on and off by FPP at the start and end of
+            each evening's show.
+          </li>
+        </ul>
 
         <figure>
           <img src="../assets/hero.jpg" alt="The Lights on Radcliffe full house layout at night">
-          <figcaption>The full display at night: house outlines, four PEX arches, mini-trees, Mega Tree, and the 88.3 FM matrix sign.</figcaption>
+          <figcaption>The full display at night: house outlines and windows, four PEX arches, six mini-trees, Mega Tree, and the 88.3 FM sign.</figcaption>
         </figure>
       </div>
     </section>
